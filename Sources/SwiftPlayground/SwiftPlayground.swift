@@ -30,9 +30,8 @@ struct SwiftPlayground {
         var currentWeightStock = "\(currentCountStock / 10)kg"
         /// You start with 50$ in your wallet
         var walletFunds = 50
-        func print$(with funds: Int) {
-
-            // return "\(funds)$"
+        func print$(after funds: Int) {
+            var unitFunds = "\(funds)$"
         }
 
         //// Data Transfer Variables between Menu Options #2-3
@@ -77,12 +76,12 @@ struct SwiftPlayground {
         // Calculates Purchases for Stock.
         /*
         : - Parameters:
-        :   - buyAmount: The amount of kumara the user purchases.
+        :   - boughtKumara: The amount of kumara the user purchases.
         : - Returns: Stock after purchase.
         */
-        func buyKumara(buyAmount: Int) -> Int {
+        func buyAmount(of boughtKumara: Int) -> Int {
             // Boundary & Invalid Check for Purchases
-            countAfterPurchase = currentCountStock + buyAmount
+            countAfterPurchase = currentCountStock + boughtKumara
 
             if currentCountStock == stockMax {
                 print("Your stock is completely full! Please have a sale before buying more!")
@@ -91,27 +90,27 @@ struct SwiftPlayground {
                 maxCountBuyable = stockMax - currentCountStock
                 checkPlural(of: maxCountBuyable)
                 print(
-                    "You can't fit that many kumara in stock! You can only buy \(maxCountBuyable) more egg\(pluralS) before you run out of storage!"
+                    "You can't fit that many kumara in stock! You can only buy \(maxCountBuyable) more kumara\(pluralS) before you run out of storage!"
                 )
                 print("Kumara in stock: \(currentCountStock)")
-            } else if buyAmount < 0 {
+            } else if boughtKumara < 0 {
                 print("You can't buy a negative amount of kumara!")
                 print("Kumara in stock: \(currentCountStock)")
             }
             /// Why doesn't this Invalid Input Checker work? :(
-            //  else if buyAmount != Int > stockMin {
-            //     print ("Invalid Input! Please enter a whole, positive number of kumara to buy that also wouldn't overflow your stock!")
+            //  else if boughtKumara != Int > stockMin {
+            //     print ("You can't buy portions of kumara! Please enter a whole, positive number of kumara to buy that also wouldn't overflow your stock!")
             //     print("Kumara in stock: \(currentCountStock)")
             //     mainMenu()
             // }
             else {
                 // Calculates Daily & Total Purchase Count
-                dailyBought += buyAmount
-                totalBought += buyAmount
+                dailyBought += boughtKumara
+                totalBought += boughtKumara
                 
                 // Calculates Stock Addition
                 var countForDelivery = currentCountStock
-                boughtCount = buyAmount
+                boughtCount = boughtKumara
                 var boughtCountStock = countForDelivery + boughtCount
                 currentCountStock = boughtCountStock
 
@@ -119,19 +118,19 @@ struct SwiftPlayground {
                 if currentCountStock <= stockMin {
                     buyRecommend = stockTooLow - currentCountStock
                     checkPlural(of: buyRecommend)
-                    print ("Warning! Stock is empty! Please perform a purchase of \(buyRecommend) egg\(pluralS) or more.")
+                    print ("Warning! Stock is empty! Please perform a purchase of \(buyRecommend) kumara\(pluralS) or more.")
                 } else if currentCountStock <= stockTooLow {
                     buyRecommend = stockTooLow - currentCountStock + pastWarning
                     checkPlural(of: buyRecommend)
-                    print ("Warning! Stock is low! Please perform a purchase of \(buyRecommend) egg\(pluralS) or more.")
+                    print ("Warning! Stock is low! Please perform a purchase of \(buyRecommend) kumara\(pluralS) or more.")
                 } else if currentCountStock >= stockMax {
                     sellRecommend = currentCountStock - stockTooHigh
                     checkPlural(of: sellRecommend)
-                    print ("Warning! Stock is full! Please perform a sale of \(sellRecommend) egg\(pluralS) or more.")
+                    print ("Warning! Stock is full! Please perform a sale of \(sellRecommend) kumara\(pluralS) or more.")
                 } else if currentCountStock >= stockTooHigh {
                     sellRecommend = currentCountStock - stockTooHigh + pastWarning
                     checkPlural(of: sellRecommend)
-                    print ("Warning! Stock is high! Please perform a sale of \(sellRecommend) egg\(pluralS) or more.")
+                    print ("Warning! Stock is high! Please perform a sale of \(sellRecommend) kumara\(pluralS) or more.")
                 }
                 print("Kumara in stock: \(currentCountStock)")
             }
@@ -142,38 +141,41 @@ struct SwiftPlayground {
         // Calculates Sales for Stock.
         /*
         : - Parameters:
-        :   - sellAmount: The amount of kumara the user sells.
+        :   - soldKumara: The amount of kumara the user sells.
         : - Returns: Stock after sale.
         */
-        func sellKumara(sellAmount: Int) -> Int {
+        func sellAmount(of soldKumara: Int) -> Int {
             // Boundary & Invalid Checks for Sales
             if currentCountStock == stockMin {
                 print("Your stock is completely empty! Please have a purchase before selling more!")
                 print("Kumara in stock: \(currentCountStock)")
-            } else if sellAmount > currentCountStock {
+            } else if soldKumara > currentCountStock {
                 checkPlural(of: currentCountStock)
                 print(
-                    "You don't have that many kumara to sell! You can only sell \(currentCountStock) more egg\(pluralS) until you run out of stock!"
+                    "You don't have that many kumara to sell! You can only sell \(currentCountStock) more kumara\(pluralS) until you run out of stock!"
                 )
                 print("Kumara in stock: \(currentCountStock)")
-            } else if sellAmount < 0 {
+            } else if soldKumara < 0 {
                 print("You can't sell a negative amount of kumara!")
                 print("Kumara in stock: \(currentCountStock)")
             }
-            /// Why doesn't this Invalid Input Checker work? :(
-            //  else if sellAmount != Int > stockMin {
+            // else if soldKumara == Double {
+            //     print ("You can't sell portions of kumara! Please enter a whole, positive number of kumara to sell that also wouldn't leave your stock in debt!")
+            //     print("Kumara in stock: \(currentCountStock)")
+            //     mainMenu()
+            // } else if soldKumara != Int > stockMin {
             //     print ("Invalid Input! Please enter a whole, positive number of kumara to sell that also wouldn't leave your stock in debt!")
             //     print("Kumara in stock: \(currentCountStock)")
             //     mainMenu()
             // }
             else {
                 // Calculates Daily & Total Sale Count
-                dailySold += sellAmount
-                totalSold += sellAmount
+                dailySold += soldKumara
+                totalSold += soldKumara
 
                 // Calculates Stock Subtraction
                 var countForSale = currentCountStock
-                soldCount = sellAmount
+                soldCount = soldKumara
                 var soldCountStock = countForSale - soldCount
                 currentCountStock = soldCountStock
 
@@ -181,19 +183,19 @@ struct SwiftPlayground {
                 if currentCountStock <= stockMin {
                     buyRecommend = stockTooLow - currentCountStock
                     checkPlural(of: buyRecommend)
-                    print ("Warning! Stock is empty! Please perform a purchase of \(buyRecommend) egg\(pluralS) or more.")
+                    print ("Warning! Stock is empty! Please perform a purchase of \(buyRecommend) kumara\(pluralS) or more.")
                 } else if currentCountStock <= stockTooLow {
                     buyRecommend = stockTooLow - currentCountStock + pastWarning
                     checkPlural(of: buyRecommend)
-                    print ("Warning! Stock is low! Please perform a purchase of \(buyRecommend) egg\(pluralS) or more.")
+                    print ("Warning! Stock is low! Please perform a purchase of \(buyRecommend) kumara\(pluralS) or more.")
                 } else if currentCountStock >= stockMax {
                     sellRecommend = currentCountStock - stockTooHigh
                     checkPlural(of: sellRecommend)
-                    print ("Warning! Stock is full! Please perform a sale of \(sellRecommend) egg\(pluralS) or more.")
+                    print ("Warning! Stock is full! Please perform a sale of \(sellRecommend) kumara\(pluralS) or more.")
                 } else if currentCountStock >= stockTooHigh {
                     sellRecommend = currentCountStock - stockTooHigh + pastWarning
                     checkPlural(of: sellRecommend)
-                    print ("Warning! Stock is high! Please perform a sale of \(sellRecommend) egg\(pluralS) or more.")
+                    print ("Warning! Stock is high! Please perform a sale of \(sellRecommend) kumara\(pluralS) or more.")
                 }
                 print("Kumara in stock: \(currentCountStock)")
             }
@@ -208,7 +210,7 @@ struct SwiftPlayground {
         func stockMessage() -> Int {
             checkPlural(of: currentCountStock)
             
-            print("You currently have \(currentCountStock) egg\(pluralS) in stock.")
+            print("You currently have \(currentCountStock) kumara\(pluralS) in stock.")
             mainMenu()
             return currentCountStock
         }
@@ -219,10 +221,10 @@ struct SwiftPlayground {
         */
         func updateBoughtCount() -> Int {
             checkPlural(of: dailyBought)
-            print("You have sold \(dailyBought) egg\(pluralS) so far today.")
+            print("You have sold \(dailyBought) kumara\(pluralS) so far today.")
 
             checkPlural(of: totalBought)
-            print("You have sold \(totalBought) egg\(pluralS) so far since the opening of your shop.")
+            print("You have sold \(totalBought) kumara\(pluralS) so far since the opening of your shop.")
             mainMenu()
             return totalBought
         }
@@ -233,26 +235,26 @@ struct SwiftPlayground {
         */
         func updateSoldCount() -> Int {
             checkPlural(of: dailySold)
-            print("You have sold \(dailySold) egg\(pluralS) so far today.")
+            print("You have sold \(dailySold) kumara\(pluralS) so far today.")
 
             checkPlural(of: totalSold)
-            print("You have sold \(totalSold) egg\(pluralS) so far since the opening of your shop.")
+            print("You have sold \(totalSold) kumara\(pluralS) so far since the opening of your shop.")
             mainMenu()
             return totalSold
         }
 
         func endWithSummary() {
             checkPlural(of: dailyBought)
-            print("You have sold \(dailyBought) egg\(pluralS) so far today.")
+            print("You have sold \(dailyBought) kumara\(pluralS) so far today.")
 
             checkPlural(of: totalBought)
-            print("You have sold \(totalBought) egg\(pluralS) so far since the opening of your shop.")
+            print("You have sold \(totalBought) kumara\(pluralS) so far since the opening of your shop.")
 
             checkPlural(of: dailySold)
-            print("You have sold \(dailySold) egg\(pluralS) so far today.")
+            print("You have sold \(dailySold) kumara\(pluralS) so far today.")
 
             checkPlural(of: totalSold)
-            print("You have sold \(totalSold) egg\(pluralS) so far since the opening of your shop.")
+            print("You have sold \(totalSold) kumara\(pluralS) so far since the opening of your shop.")
 
             // Variable Reset for next day
             dailyBought = 0
@@ -273,23 +275,23 @@ struct SwiftPlayground {
         : - Returns: Menu option chosen by the user.
         */
         func mainMenu() -> Int {
-            print("==== Shop of Kabseggtivity ====")
+            print("==== Shop of Kumarativity ====")
             print("1. Buy kumara")
             print("2. Sell kumara")
             print("3. Show current stock")
             print("4. Show total kumara bought")
             print("5. Show total kumara sold")
-            print("6. End day with Daily Summary")
+            print("6. Close shop with Daily Summary")
             print("7. Exit")
             print("Choose an option (1-7):")
 
             var menuOption = Int(readLine()!)!
             if menuOption == 1 {
                 print("Please enter the amount of kumara you want to buy:")
-                buyKumara(buyAmount: Int(readLine()!)!)
+                buyAmount(of: Int(readLine()!)!)
             } else if menuOption == 2 {
                 print("Please enter the amount of kumara you want to sell:")
-                sellKumara(sellAmount: Int(readLine()!)!)
+                sellAmount(of: Int(readLine()!)!)
             } else if menuOption == 3 {
                 stockMessage()
             } else if menuOption == 4 {
@@ -319,7 +321,7 @@ struct SwiftPlayground {
 Q1: Why is amount better as a parameter?
 A1: Because it makes for more efficient use of inserting in "readLine()!"s in parts of the code.
 
-Q2: Why does sellKumara return an optional?
+Q2: Why does sellAmount return an optional?
 A2: Because of the exclamation marks in the readLine()! present.
 
 Q3: Which parts of your program became easier to test because of return values?
