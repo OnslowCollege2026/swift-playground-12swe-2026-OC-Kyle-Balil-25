@@ -4,70 +4,77 @@
 @main
 struct SwiftPlayground {
     static func main() {
-        //// Constants and Variables
-        let notPlural = 1
-        var pluralS = "s"
-
-        /// Alters the dialogue grammatically to account for plurals.
-        /* Parameters:
-        :   quantity - Value of variable that affects plural dialogue
-        */
-        func checkPlural(of quantity: Int) {
-            if quantity == notPlural {
-                pluralS = ""
-            } else {
-                pluralS = "s"
-            }
-        }
         ////// 23/04/2026-4/05/2026 //////
         ///// Day 22: Summative Assessment #1 - Kumara Shop
 
         // 00 = Placeholder Number
 
-        /// You start with a stock of 100 Kumara
-        var currentCountStock = 100
-        /// Each Kumara weighs 100g, or 0.1kg. All weighing and weight is in Kilograms.
-        var currentWeightStock = "\(currentCountStock / 10)kg"
-        /// You start with 50$ in your wallet
-        var walletFunds = 50
-        func print$(after funds: Int) {
-            var unitFunds = "\(funds)$"
+
+        //// Constants and Variables
+
+        // Prints Units for Weight.
+        /*
+        : - Parameters:
+        :   - weight: Total weight of kumara used during instance.
+        : - Returns: Weight with units.
+        */
+        func printKg(after weight: Double) -> String {
+            var unitWeight = "\(weight)kg"
+            return unitWeight
         }
 
+        // Prints Units for Cash.
+        /*
+        : - Parameters:
+        :   - funds: Total funds used during instance.
+        : - Returns: Funds with units.
+        */
+        /// You start with 50$ in your wallet
+        var walletFunds = 50.0
+        func print$(after funds: Double) -> String {
+            var unitFunds = "\(funds)$"
+            return unitFunds
+        }
+
+        /// You start with a stock of 10kg Kumara
+        var currentWeightStock = 10.0
+        /// Each Kumara weighs 100g, or 0.1kg. All weighing and weight is in Kilograms.
+        var currentCountStock = currentWeightStock * 10
+
         //// Data Transfer Variables between Menu Options #2-3
-        var boughtCountStock = 0
-        var soldCountStock = 0
-        var boughtCount = 0
-        var soldCount = 0
-        var countForSale = 0
-        var countForDelivery = 0
+        var boughtWeightStock = 0.0
+        var soldWeightStock = 0.0
+        var boughtWeight = 0.0
+        var soldWeight = 0.0
+        var countForSale = 0.0
+        var countForDelivery = 0.0
 
         //// Low/High Stock Warning Placeholder Variables
-        let stockTooLow = 50
-        let stockTooHigh = 450
-        var buyRecommend = 00
-        var sellRecommend = 00
+        let stockTooLow = 5.0
+        let stockTooHigh = 45.0
+        var buyRecommend = 00.0
+        var sellRecommend = 00.0
 
         //// Menu Option #4 & #5
-        var dailyBought = 0
-        var totalBought = 0
-        var dailySold = 0
-        var totalSold = 0
+        var dailyBought = 0.0
+        var totalBought = 0.0
+        var dailySold = 0.0
+        var totalSold = 0.0
 
         //// Boundary Check Variables
         /// Max Bin Strength = 50kg, 500 Kumara = 50kg
-        let stockMax = 500
-        let stockMin = 0
-        var countAfterPurchase = 0
-        var maxCountBuyable = 0
+        let stockMax = 50.0
+        let stockMin = 0.0
+        var countAfterPurchase = 0.0
+        var maxWeightBuyable = 0.0
         /// Offsetting variables to accomodate for boundary checking
-        var pastWarning = 1
+        var pastWarning = 1.0
 
         var dayCount = 1
 
         // Starting Sequence
         print("")
-        print("You have started your first day off with 100 kumara at a weight of in stock and 50$...")
+        print("You have started your first day off with \(currentCountStock) kumara at a weight of \(printKg(after: currentWeightStock)) in stock and \(walletFunds)...")
         print("")
         mainMenu()
 
@@ -79,63 +86,61 @@ struct SwiftPlayground {
         :   - boughtKumara: The amount of kumara the user purchases.
         : - Returns: Stock after purchase.
         */
-        func buyAmount(of boughtKumara: Int) -> Int {
+        func buyAmount(of boughtKumara: Double) -> Double {
             // Boundary & Invalid Check for Purchases
-            countAfterPurchase = currentCountStock + boughtKumara
+            countAfterPurchase = currentWeightStock + boughtKumara
 
-            if currentCountStock == stockMax {
+            if currentWeightStock == stockMax {
                 print("Your stock is completely full! Please have a sale before buying more!")
-                print("Kumara in stock: \(currentCountStock)")
+                print("Kumara in stock: \(currentWeightStock)")
             } else if countAfterPurchase > stockMax {
-                maxCountBuyable = stockMax - currentCountStock
-                checkPlural(of: maxCountBuyable)
+                maxWeightBuyable = stockMax - currentWeightStock
                 print(
-                    "You can't fit that many kumara in stock! You can only buy \(maxCountBuyable) more kumara\(pluralS) before you run out of storage!"
+                    "You can't fit that many kumara in stock! You can only buy \(maxWeightBuyable) more kumara before you run out of storage!"
                 )
-                print("Kumara in stock: \(currentCountStock)")
+                print("Kumara in stock: \(currentWeightStock)")
             } else if boughtKumara < 0 {
                 print("You can't buy a negative amount of kumara!")
-                print("Kumara in stock: \(currentCountStock)")
+                print("Kumara in stock: \(currentWeightStock)")
             }
-            /// Why doesn't this Invalid Input Checker work? :(
-            //  else if boughtKumara != Int > stockMin {
-            //     print ("You can't buy portions of kumara! Please enter a whole, positive number of kumara to buy that also wouldn't overflow your stock!")
-            //     print("Kumara in stock: \(currentCountStock)")
+            // else if boughtKumara == Double {
+            //     print ("You can't buy portions of kumara! Please enter a whole, positive number of kumara to buy that also wouldn't leave your stock overflowing!")
+            //     print("Kumara in stock: \(currentWeightStock)")
+            //     mainMenu()
+            // } else if boughtKumara != Int > stockMin {
+            //     print ("Invalid Input! Please enter a whole, positive number of kumara to buy that also wouldn't leave your stock overflowing!")
+            //     print("Kumara in stock: \(currentWeightStock)")
             //     mainMenu()
             // }
             else {
-                // Calculates Daily & Total Purchase Count
+                // Calculates Daily & Total Purchase Weight
                 dailyBought += boughtKumara
                 totalBought += boughtKumara
                 
                 // Calculates Stock Addition
-                var countForDelivery = currentCountStock
-                boughtCount = boughtKumara
-                var boughtCountStock = countForDelivery + boughtCount
-                currentCountStock = boughtCountStock
+                var countForDelivery = currentWeightStock
+                boughtWeight = boughtKumara
+                var boughtWeightStock = countForDelivery + boughtWeight
+                currentWeightStock = boughtWeightStock
 
                 // Low/High Stock Warning Check
-                if currentCountStock <= stockMin {
-                    buyRecommend = stockTooLow - currentCountStock
-                    checkPlural(of: buyRecommend)
-                    print ("Warning! Stock is empty! Please perform a purchase of \(buyRecommend) kumara\(pluralS) or more.")
-                } else if currentCountStock <= stockTooLow {
-                    buyRecommend = stockTooLow - currentCountStock + pastWarning
-                    checkPlural(of: buyRecommend)
-                    print ("Warning! Stock is low! Please perform a purchase of \(buyRecommend) kumara\(pluralS) or more.")
-                } else if currentCountStock >= stockMax {
-                    sellRecommend = currentCountStock - stockTooHigh
-                    checkPlural(of: sellRecommend)
-                    print ("Warning! Stock is full! Please perform a sale of \(sellRecommend) kumara\(pluralS) or more.")
-                } else if currentCountStock >= stockTooHigh {
-                    sellRecommend = currentCountStock - stockTooHigh + pastWarning
-                    checkPlural(of: sellRecommend)
-                    print ("Warning! Stock is high! Please perform a sale of \(sellRecommend) kumara\(pluralS) or more.")
+                if currentWeightStock <= stockMin {
+                    buyRecommend = stockTooLow - currentWeightStock
+                    print ("Warning! Stock is empty! Please perform a purchase of \(buyRecommend) kumara or more.")
+                } else if currentWeightStock <= stockTooLow {
+                    buyRecommend = stockTooLow - currentWeightStock + pastWarning
+                    print ("Warning! Stock is low! Please perform a purchase of \(buyRecommend) kumara or more.")
+                } else if currentWeightStock >= stockMax {
+                    sellRecommend = currentWeightStock - stockTooHigh
+                    print ("Warning! Stock is full! Please perform a sale of \(sellRecommend) kumara or more.")
+                } else if currentWeightStock >= stockTooHigh {
+                    sellRecommend = currentWeightStock - stockTooHigh + pastWarning
+                    print ("Warning! Stock is high! Please perform a sale of \(sellRecommend) kumara or more.")
                 }
-                print("Kumara in stock: \(currentCountStock)")
+                print("Kumara in stock: \(currentWeightStock)")
             }
             mainMenu()
-            return currentCountStock
+            return currentWeightStock
         }
         
         // Calculates Sales for Stock.
@@ -144,87 +149,79 @@ struct SwiftPlayground {
         :   - soldKumara: The amount of kumara the user sells.
         : - Returns: Stock after sale.
         */
-        func sellAmount(of soldKumara: Int) -> Int {
+        func sellAmount(of soldKumara: Double) -> Double {
             // Boundary & Invalid Checks for Sales
-            if currentCountStock == stockMin {
+            if currentWeightStock == stockMin {
                 print("Your stock is completely empty! Please have a purchase before selling more!")
-                print("Kumara in stock: \(currentCountStock)")
-            } else if soldKumara > currentCountStock {
-                checkPlural(of: currentCountStock)
+                print("Kumara in stock: \(currentWeightStock)")
+            } else if soldKumara > currentWeightStock {
                 print(
-                    "You don't have that many kumara to sell! You can only sell \(currentCountStock) more kumara\(pluralS) until you run out of stock!"
+                    "You don't have that many kumara to sell! You can only sell \(currentWeightStock) more kumara until you run out of stock!"
                 )
-                print("Kumara in stock: \(currentCountStock)")
+                print("Kumara in stock: \(currentWeightStock)")
             } else if soldKumara < 0 {
                 print("You can't sell a negative amount of kumara!")
-                print("Kumara in stock: \(currentCountStock)")
+                print("Kumara in stock: \(currentWeightStock)")
             }
             // else if soldKumara == Double {
             //     print ("You can't sell portions of kumara! Please enter a whole, positive number of kumara to sell that also wouldn't leave your stock in debt!")
-            //     print("Kumara in stock: \(currentCountStock)")
+            //     print("Kumara in stock: \(currentWeightStock)")
             //     mainMenu()
             // } else if soldKumara != Int > stockMin {
             //     print ("Invalid Input! Please enter a whole, positive number of kumara to sell that also wouldn't leave your stock in debt!")
-            //     print("Kumara in stock: \(currentCountStock)")
+            //     print("Kumara in stock: \(currentWeightStock)")
             //     mainMenu()
             // }
             else {
-                // Calculates Daily & Total Sale Count
+                // Calculates Daily & Total Sale Weight
                 dailySold += soldKumara
                 totalSold += soldKumara
 
                 // Calculates Stock Subtraction
-                var countForSale = currentCountStock
-                soldCount = soldKumara
-                var soldCountStock = countForSale - soldCount
-                currentCountStock = soldCountStock
+                var countForSale = currentWeightStock
+                soldWeight = soldKumara
+                var soldWeightStock = countForSale - soldWeight
+                currentWeightStock = soldWeightStock
 
                 // Low/High Stock Warning Check
-                if currentCountStock <= stockMin {
-                    buyRecommend = stockTooLow - currentCountStock
-                    checkPlural(of: buyRecommend)
-                    print ("Warning! Stock is empty! Please perform a purchase of \(buyRecommend) kumara\(pluralS) or more.")
-                } else if currentCountStock <= stockTooLow {
-                    buyRecommend = stockTooLow - currentCountStock + pastWarning
-                    checkPlural(of: buyRecommend)
-                    print ("Warning! Stock is low! Please perform a purchase of \(buyRecommend) kumara\(pluralS) or more.")
-                } else if currentCountStock >= stockMax {
-                    sellRecommend = currentCountStock - stockTooHigh
-                    checkPlural(of: sellRecommend)
-                    print ("Warning! Stock is full! Please perform a sale of \(sellRecommend) kumara\(pluralS) or more.")
-                } else if currentCountStock >= stockTooHigh {
-                    sellRecommend = currentCountStock - stockTooHigh + pastWarning
-                    checkPlural(of: sellRecommend)
-                    print ("Warning! Stock is high! Please perform a sale of \(sellRecommend) kumara\(pluralS) or more.")
+                if currentWeightStock <= stockMin {
+                    buyRecommend = stockTooLow - currentWeightStock
+                    print ("Warning! Stock is empty! Please perform a purchase of \(buyRecommend) kumara or more.")
+                } else if currentWeightStock <= stockTooLow {
+                    buyRecommend = stockTooLow - currentWeightStock + pastWarning
+                    print ("Warning! Stock is low! Please perform a purchase of \(buyRecommend) kumara or more.")
+                } else if currentWeightStock >= stockMax {
+                    sellRecommend = currentWeightStock - stockTooHigh
+                    print ("Warning! Stock is full! Please perform a sale of \(sellRecommend) kumara or more.")
+                } else if currentWeightStock >= stockTooHigh {
+                    sellRecommend = currentWeightStock - stockTooHigh + pastWarning
+                    print ("Warning! Stock is high! Please perform a sale of \(sellRecommend) kumara or more.")
                 }
-                print("Kumara in stock: \(currentCountStock)")
+                print("Kumara in stock: \(currentWeightStock)")
             }
             mainMenu()
-            return currentCountStock
+            return currentWeightStock
         }
         
         // Reminder of your current stock.
         /*
         : - Returns: Current stock.
         */
-        func stockMessage() -> Int {
-            checkPlural(of: currentCountStock)
+        func stockMessage() -> Double {
             
-            print("You currently have \(currentCountStock) kumara\(pluralS) in stock.")
+            print("You currently have \(currentWeightStock) kumara in stock.")
             mainMenu()
-            return currentCountStock
+            return currentWeightStock
         }
         
         // Calculates total purchases.
         /*
         : - Returns: Total purchases.
         */
-        func updateBoughtCount() -> Int {
-            checkPlural(of: dailyBought)
-            print("You have sold \(dailyBought) kumara\(pluralS) so far today.")
+        func updateBoughtWeight() -> Double {
+            print("You have sold \(dailyBought) kumara so far today.")
 
-            checkPlural(of: totalBought)
-            print("You have sold \(totalBought) kumara\(pluralS) so far since the opening of your shop.")
+            print("You have sold \(totalBought) kumara so far since the opening of your shop.")
             mainMenu()
             return totalBought
         }
@@ -233,28 +230,22 @@ struct SwiftPlayground {
         /*
         : - Returns: Total sales.
         */
-        func updateSoldCount() -> Int {
-            checkPlural(of: dailySold)
-            print("You have sold \(dailySold) kumara\(pluralS) so far today.")
+        func updateSoldWeight() -> Double {
+            print("You have sold \(dailySold) kumara so far today.")
 
-            checkPlural(of: totalSold)
-            print("You have sold \(totalSold) kumara\(pluralS) so far since the opening of your shop.")
+            print("You have sold \(totalSold) kumara so far since the opening of your shop.")
             mainMenu()
             return totalSold
         }
 
         func endWithSummary() {
-            checkPlural(of: dailyBought)
-            print("You have sold \(dailyBought) kumara\(pluralS) so far today.")
+            print("You have sold \(dailyBought) kumara so far today.")
 
-            checkPlural(of: totalBought)
-            print("You have sold \(totalBought) kumara\(pluralS) so far since the opening of your shop.")
+            print("You have sold \(totalBought) kumara so far since the opening of your shop.")
 
-            checkPlural(of: dailySold)
-            print("You have sold \(dailySold) kumara\(pluralS) so far today.")
+            print("You have sold \(dailySold) kumara so far today.")
 
-            checkPlural(of: totalSold)
-            print("You have sold \(totalSold) kumara\(pluralS) so far since the opening of your shop.")
+            print("You have sold \(totalSold) kumara so far since the opening of your shop.")
 
             // Variable Reset for next day
             dailyBought = 0
@@ -288,16 +279,16 @@ struct SwiftPlayground {
             var menuOption = Int(readLine()!)!
             if menuOption == 1 {
                 print("Please enter the amount of kumara you want to buy:")
-                buyAmount(of: Int(readLine()!)!)
+                buyAmount(of: Double(readLine()!)!)
             } else if menuOption == 2 {
                 print("Please enter the amount of kumara you want to sell:")
-                sellAmount(of: Int(readLine()!)!)
+                sellAmount(of: Double(readLine()!)!)
             } else if menuOption == 3 {
                 stockMessage()
             } else if menuOption == 4 {
-                updateBoughtCount()
+                updateBoughtWeight()
             } else if menuOption == 5 {
-                updateSoldCount()
+                updateSoldWeight()
             } else if menuOption == 6 {
                 endWithSummary()
             } else if menuOption == 7 {
