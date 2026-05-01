@@ -9,9 +9,21 @@ struct SwiftPlayground {
 
         // 00 = Placeholder Number
 
+        /// Prints Units for Funds.
+        /*
+        : - Parameters:
+        :   - funds: Total funds used during instance.
+        : - Returns: Funds with units.
+        */
+        /// You start with 50$ in your wallet
+        var walletFunds = 50.0
+        func print$(after funds: Double) -> String {
+            /// Adds unit “$” to funds in dialogue
+            var unitFunds = "$\(funds)"
+            return unitFunds
+        }
 
-        //// Constants and Variables
-
+        //// Weight Variables
         /// Prints Units for Weight.
         /*
         : - Parameters:
@@ -19,27 +31,23 @@ struct SwiftPlayground {
         : - Returns: Weight with units.
         */
         func printKg(after weight: Double) -> String {
+            /// Adds unit “kg” to weight in dialogue
             var unitWeight = "\(weight)kg"
             return unitWeight
-        }
-
-        /// Prints Units for Cash.
-        /*
-        : - Parameters:
-        :   - funds: Total funds used during instance.
-        : - Returns: Funds with units.
-        */
-        // You start with 50$ in your wallet
-        var walletFunds = 50.0
-        func print$(after funds: Double) -> String {
-            var unitFunds = "\(funds)$"
-            return unitFunds
         }
 
         /// You start with a stock of 10kg Kumara
         var currentWeightStock = 10.0
         /// Each Kumara weighs 100g, or 0.1kg. All weighing and weight is in Kilograms.
         var currentCountStock = currentWeightStock * 10
+
+        //// Bagging Variables
+        /// You start with 5000 bags in store
+        var bagCount = 5000.0
+        /// Amount of bags needed for a sale. Max capacity = 50 Kumara at 5kg
+        var bagsForSale = bagCount.truncatingRemainder(dividingBy: 5.0)
+        /// Each bag costs 0.20¢ for the customer
+        var bagSaleCosts = bagsForSale / 5
 
         //// Data Transfer Variables between Menu Options #2-3
         var boughtWeightStock = 0.0
@@ -49,43 +57,55 @@ struct SwiftPlayground {
         var countForSale = 0.0
         var countForDelivery = 0.0
 
-        //// Low/High Stock Warning Placeholder Variables
-        let stockTooLow = 5.0
-        let stockTooHigh = 45.0
-        var buyRecommend = 00.0
-        var sellRecommend = 00.0
-
         //// Menu Option #4 & #5
+        /// Tracks the amount of kumara weight you’ve bought so far today.
         var dailyBought = 0.0
+        /// Tracks the amount of kumara weight you’ve bought so far since the opening of your shop.
         var totalBought = 0.0
+        /// Tracks the amount of kumara weight you’ve sold so far today.
         var dailySold = 0.0
+        /// Tracks the amount of kumara weight you’ve sold so far since the opening of your shop.
         var totalSold = 0.0
 
         //// Boundary Check Variables
         /// Max Bin Strength = 50kg, 500 Kumara = 50kg
         let stockMax = 50.0
+        /// Prevents bin from holding negative amounts of Kumara
         let stockMin = 0.0
-        var countAfterPurchase = 0.0
-        var maxWeightBuyable = 0.0
-        /// Offsetting variables to accomodate for boundary checking
-        var pastWarning = 1.0
+        /// Your theoretical stock after a purchase
+        var countAfterPurchase = 00.0
+        /// Max weight of kumara you can buy before stock gets full
+        var maxWeightBuyable = 00.0
+        /// Offsetting variables to accommodate for boundary checking
+        var safeThresholdOffset = 1.0
 
+        /// Counts the days
         var dayCount = 1
 
-        /// Warns the shopkeeper of concerningly Low/High Stocks
-        func warnStockThreshold() {
+        //// Low/High Stock Warning Placeholder Variables
+        /// Threshold for checking if stock is getting concerningly low
+        let stockTooLow = 5.0
+        /// Threshold for checking if stock is getting concerningly high
+        let stockTooHigh = 45.0
+        /// Recommends a weight of kumara to buy in order to escape the Low-Stock Threshold
+        var buyRecommend = 00.0
+        /// Recommends a weight of kumara to sell in order to escape the High-Stock Threshold
+        var sellRecommend = 00.0
+
+        /// Warns of concerningly Low/High Stocks
+        func stockThresholdWarning() {
             // Low/High Stock Warning Check
             if currentWeightStock <= stockMin {
                 buyRecommend = stockTooLow - currentWeightStock
                 print ("Warning! Stock is empty! Please perform a purchase of \(printKg(after: buyRecommend)) of kumara or more.")
             } else if currentWeightStock <= stockTooLow {
-                buyRecommend = stockTooLow - currentWeightStock + pastWarning
+                buyRecommend = stockTooLow - currentWeightStock + safeThresholdOffset
                 print ("Warning! Stock is low! Please perform a purchase of \(printKg(after: buyRecommend)) kumara or more.")
             } else if currentWeightStock >= stockMax {
                 sellRecommend = currentWeightStock - stockTooHigh
                 print ("Warning! Stock is full! Please perform a sale of \(printKg(after: sellRecommend)) kumara or more.")
             } else if currentWeightStock >= stockTooHigh {
-                sellRecommend = currentWeightStock - stockTooHigh + pastWarning
+                sellRecommend = currentWeightStock - stockTooHigh + safeThresholdOffset
                 print ("Warning! Stock is high! Please perform a sale of \(printKg(after: sellRecommend)) kumara or more.")
             }
         }
@@ -114,14 +134,14 @@ struct SwiftPlayground {
             } else if countAfterPurchase > stockMax {
                 maxWeightBuyable = stockMax - currentWeightStock
                 print(
-                    "You can't fit that many kumara in stock! You can only buy \(printKg(after: maxWeightBuyable)) of kumara before you run out of storage!"
+                    "You can't fit that much kumara in stock! You can only buy \(printKg(after: maxWeightBuyable)) of kumara before you run out of storage!"
                 )
-                stockMessage()
-            } else if boughtKumara < 0 {
-                print("You can't buy a negative amount of kumara!")
                 stockMessage()
             } else if boughtKumara == 0 {
                 print("You can't buy an absence of kumara!")
+                stockMessage()
+            } else if boughtKumara < 0 {
+                print("You can't buy a negative amount of kumara!")
                 stockMessage()
             }
             // else if boughtKumara == Double {
@@ -144,8 +164,7 @@ struct SwiftPlayground {
                 var boughtWeightStock = countForDelivery + boughtWeight
                 currentWeightStock = boughtWeightStock
 
-                // Low/High Stock Warning Check
-                warnStockThreshold()
+                stockThresholdWarning()
                 stockMessage()
             }
             return currentWeightStock
@@ -164,14 +183,14 @@ struct SwiftPlayground {
                 stockMessage()
             } else if soldKumara > currentWeightStock {
                 print(
-                    "You don't have that many kumara to sell! You can only sell \(printKg(after: currentWeightStock)) of kumara until you run out of stock!"
+                    "You don't have that much kumara to sell! You can only sell \(printKg(after: currentWeightStock)) of kumara until you run out of stock!"
                 )
-                stockMessage()
-            } else if soldKumara < 0 {
-                print("You can't sell a negative amount of kumara!")
                 stockMessage()
             } else if soldKumara == 0 {
                 print("You can't sell an absence of kumara!")
+                stockMessage()
+            } else if soldKumara < 0 {
+                print("You can't sell a negative amount of kumara!")
                 stockMessage()
             }
             // else if soldKumara == Double {
@@ -194,8 +213,7 @@ struct SwiftPlayground {
                 var soldWeightStock = countForSale - soldWeight
                 currentWeightStock = soldWeightStock
 
-                // Low/High Stock Warning Check
-                warnStockThreshold()
+                stockThresholdWarning()
                 stockMessage()
             }
             return currentWeightStock
@@ -207,7 +225,7 @@ struct SwiftPlayground {
         */
         func stockMessage() -> Double {
             
-            print("Kumara in stock: \(printKg(after: currentWeightStock))")
+            print("Kumara in stock: \(currentCountStock) Kumara at \(printKg(after: currentWeightStock))")
             mainMenu()
             return currentWeightStock
         }
@@ -216,40 +234,36 @@ struct SwiftPlayground {
         /*
         : - Returns: Total purchases.
         */
-        func updateBoughtWeight() -> Double {
-            print("You have sold \(dailyBought) kumara so far today.")
+        func updateBoughtWeight() {
+            print("You have bought \(printKg(after: dailyBought)) of kumara so far today.")
 
-            print("You have sold \(totalBought) kumara so far since the opening of your shop.")
+            print("You have bought \(printKg(after: totalBought)) of kumara so far since the opening of your shop.")
             mainMenu()
-            return totalBought
         }
-        
+
         /// Calculates total sales.
         /*
         : - Returns: Total sales.
         */
-        func updateSoldWeight() -> Double {
-            print("You have sold \(dailySold) kumara so far today.")
+        func updateSoldWeight() {
+            print("You have sold \(printKg(after: dailySold)) of kumara so far today.")
 
-            print("You have sold \(totalSold) kumara so far since the opening of your shop.")
+            print("You have sold \(printKg(after: totalSold)) of kumara so far since the opening of your shop.")
             mainMenu()
-            return totalSold
         }
+
 
         /// Shop reaches closing hours with a summary of work statistics.
         func endDayWithSummary() {
-            print("You have sold \(dailyBought) kumara so far today.")
+            updateBoughtWeight()
+            updateSoldWeight()
 
-            print("You have sold \(totalBought) kumara so far since the opening of your shop.")
-
-            print("You have sold \(dailySold) kumara so far today.")
-
-            print("You have sold \(totalSold) kumara so far since the opening of your shop.")
 
             // Variable Reset for next day
             dailyBought = 0
             dailySold = 0
             dayCount += 1
+
 
             // Simulation Prompt for next day
             print ("     ")
@@ -260,6 +274,26 @@ struct SwiftPlayground {
             mainMenu()
         }
         
+        /// Tracks inputs for both buying/selling kumara
+        /*
+        : - Parameters:
+        :   - costingWarning: Warning Dialogue for Invalid Inputs
+        : - Returns: Stock after sale.
+        */
+        func costingInput(with costingWarning: String) -> Double {
+            /// Input for Kumara Weight being Bought/Sold
+            var costingOption = "00.0"
+            /// Input for Kumara Weight being Bought/Sold, converted to Int for calculations.
+            var costingNumber = 00.0
+            guard costingOption == readLine(), costingNumber == Double(costingOption) else {
+                print("\(costingWarning)")
+                mainMenu()
+                return 0 // ???
+            }
+            return costingNumber
+        }
+
+
         /// Shows Various Menu Options
         /*
         : - Returns: Menu option chosen by the user.
@@ -275,47 +309,34 @@ struct SwiftPlayground {
             print("7. Exit")
             print("Choose an option (1-7):")
 
-            var menuOption = Int(readLine()!)!
-            if menuOption == 1 {
-                print("Please enter the amount of kumara you want to buy:")
-                buyWeight(of: Double(readLine()!)!)
-            } else if menuOption == 2 {
-                print("Please enter the amount of kumara you want to sell:")
-                sellWeight(of: Double(readLine()!)!)
-            } else if menuOption == 3 {
-                stockMessage()
-            } else if menuOption == 4 {
-                updateBoughtWeight()
-            } else if menuOption == 5 {
-                updateSoldWeight()
-            } else if menuOption == 6 {
-                endDayWithSummary()
-            } else if menuOption == 7 {
-                print("Shutting Interface Down...")
-            } else {
-                print("Invalid Input. Please enter a whole number from 1-7.")
+
+            /// A written number from 1-7 that decides which option of the Main Menu to perform
+            var menuOption = "00"
+            /// A written number from 1-7 that decides which option of the Main Menu to perform, converted to Int for easier List-Scrolling
+            var menuNumber = 0
+            guard menuOption == readLine(), menuNumber == Int(menuOption) else {
+                print("Invalid Input! Please enter a whole number from 1-7.")
                 mainMenu()
+                return 0 // ???
             }
-            return menuOption
+            if menuNumber == 1 {
+                print("Please enter a weight (kg) of kumara you want to buy:")
+                buyWeight(of: costingInput(with: "Invalid Input! Please enter a whole, positive number of kumara to buy that also wouldn't leave your stock overflowing!"))
+            } else if menuNumber == 2 {
+                print("Please enter a weight (kg) of kumara you want to sell:")
+                sellWeight(of: costingInput(with: "Invalid Input! Please enter a whole, positive number of kumara to sell that also wouldn't leave your stock in debt!"))
+            } else if menuNumber == 3 {
+                stockMessage()
+            } else if menuNumber == 4 {
+                updateBoughtWeight()
+            } else if menuNumber == 5 {
+                updateSoldWeight()
+            } else if menuNumber == 6 {
+                endDayWithSummary()
+            } else if menuNumber == 7 {
+                print("Shutting Interface Down...")
+            }
+            return menuNumber
         }
     }
 }
-
-////// 26/02/2026 //////
-//// Day 9: [Functions] Challenge - Egg Shop (Extension)
-
-////// 27-27/02/2026 //////
-//// Day 10: [Functions] Challenge - Egg Shop (Review)
-
-/*
-Q1: Why is amount better as a parameter?
-A1: Because it makes for more efficient use of inserting in "readLine()!"s in parts of the code.
-
-Q2: Why does sellWeight return an optional?
-A2: Because of the exclamation marks in the readLine()! present.
-
-Q3: Which parts of your program became easier to test because of return values?
-A3: Absolutely nothing because Return Values are practically useless here, it's just so much more practical for 99% of the code to happen in functions that there's no use for something such as:
-let funcTransportVariable = function(parameter: placeholder)
-print funcTransportVariable
-*/
