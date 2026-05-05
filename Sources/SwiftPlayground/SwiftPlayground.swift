@@ -107,10 +107,6 @@ struct SwiftPlayground {
         /* Data Transfer Variables between Menu Options #1-2 */
         var boughtWeightStock = 0.0
         var soldWeightStock = 0.0
-        var boughtWeight = 0.0
-        var soldWeight = 0.0
-        var totalToSubtractFrom = 0.0
-        var totalToAddOn = 0.0
         // Stock gets checked by both the program and the stall owner
         func stockCheckup() {
             stockWarning()
@@ -146,6 +142,10 @@ struct SwiftPlayground {
         var dailyEarnings = 0.0
         /// Tracks earnings since the opening of your stall
         var totalEarnings = 0.0
+        /// Daily Variant Phrase of Dialogue
+        let dailyDialogue = "so far today"
+        /// Total Variant Phrase of Dialogue
+        let totalDialogue = "since the opening of your stall"
 
         /* Boundary Check Variables */
         /// Max Bin Strength = 50kg, 500 Kumara = 50kg
@@ -199,7 +199,7 @@ struct SwiftPlayground {
         print("")
         print("You have started your first day off with \(convertCount(from: currentWeightStock)) kumara at a weight of \(printKg(after: currentWeightStock)) in stock and \(print$(before: walletFunds))...")
         print("")
-        mainMenu()
+        mainMenu(with: dailyDialogue, and: totalDialogue)
 
         //// Functions of different Main Menu Options \(printKg(after: )) of
         
@@ -209,10 +209,10 @@ struct SwiftPlayground {
         :   - kumaraWeight: The amount of kumara the user purchases
         : - Returns: Stock after purchase
         */
-        func buyWeight(of kumaraWeight: Double) -> Double {
+        func buyWeight() -> Double {
             // Boundary Checks for Purchases
-            countAfterPurchase = currentWeightStock + kumaraWeight
-
+            var buyOption = readLine()!
+            var kumaraWeight = Double(buyOption)!
             if currentWeightStock == stockMax { // Checks if stock is full during attempted purchase
                 print("Your stock is completely full! Please have a sale before buying more!")
                 stockMessage()
@@ -226,11 +226,12 @@ struct SwiftPlayground {
             } else if kumaraWeight < noKumara { // Checks if attempted purchase order contains kumara made out of antimatter
                 print("You can't buy kumara made out of antimatter!")
                 stockMessage()
-            } else {
+            } else if countAfterPurchase < stockMax && kumaraWeight > noKumara {
+                // Placeholder
+                countAfterPurchase = currentWeightStock + kumaraWeight
+
                 // Calculates Stock Addition
-                var totalToAddOn = currentWeightStock
-                boughtWeight = kumaraWeight
-                var boughtWeightStock = totalToAddOn + boughtWeight
+                var boughtWeightStock = currentWeightStock + kumaraWeight
                 currentWeightStock = boughtWeightStock
 
                 /* Calculations for Purchase Dialogue */
@@ -250,6 +251,8 @@ struct SwiftPlayground {
                 totalSpending += kumaraCosts
 
                 stockCheckup()
+            } else {
+                print("Invalid Input! Please enter a whole, positive number of kumara to buy that also wouldn't leave your stock overflowing!")
             }
             return currentWeightStock
         }
@@ -260,8 +263,10 @@ struct SwiftPlayground {
         :   - kumaraWeight: The amount of kumara the user sells
         : - Returns: Stock after sale
         */
-        func sellWeight(of kumaraWeight: Double) -> Double {
+        func sellWeight() -> Double {
             // Boundary Checks for Sales
+            var sellOption = readLine()!
+            var kumaraWeight = Double(sellOption)!
             if currentWeightStock == stockMin { // Checks if stock is empty during attempted sale
                 print("Your stock is completely empty! Please have a purchase before selling more!")
                 stockMessage()
@@ -274,11 +279,9 @@ struct SwiftPlayground {
             } else if kumaraWeight < noKumara { // Checks if attempted sale order contains kumara made out of antimatter
                 print("You can't sell kumara made out of antimatter!")
                 stockMessage()
-            } else {
+            } else if kumaraWeight < currentWeightStock && kumaraWeight > noKumara {
                 // Calculates Stock Subtraction
-                var totalToSubtractFrom = currentWeightStock
-                soldWeight = kumaraWeight
-                var soldWeightStock = totalToSubtractFrom - soldWeight
+                var soldWeightStock = currentWeightStock - kumaraWeight
                 currentWeightStock = soldWeightStock
 
                 /* Calculations for Sale Dialogue */
@@ -327,6 +330,8 @@ struct SwiftPlayground {
                 totalAverageBagCost = totalEarnings / totalSoldBags
 
                 stockCheckup()
+            } else {
+                print("Invalid Input! Please enter a whole, positive number of kumara to sell that also wouldn't leave your stock in debt!")
             }
             return currentWeightStock
         }
@@ -336,14 +341,10 @@ struct SwiftPlayground {
             print("Kumara in stock: \(convertCount(from: currentWeightStock)) Kumara at \(printKg(after: currentWeightStock))")
             print("Bags on rack: \(bagCount)")
             print("Wallet: \(print$(before: walletFunds))")
-            mainMenu()
+            mainMenu(with: dailyDialogue, and: totalDialogue)
         }
         
         /* Summary Dialogue Alteration Operations (NOT Operations that are part of the 8 Menu Options) */
-        /// Daily Variant Phrase of Dialogue
-        let dailyDialogue = "so far today"
-        /// Total Variant Phrase of Dialogue
-        let totalDialogue = "since the opening of your stall"
         /// Alters Weight Summary Dialogue based on the situational context of the functions
         /*
         : - Parameters:
@@ -365,42 +366,42 @@ struct SwiftPlayground {
         /* Outlier Operations End */
         
         /// Shows average weight and cost of bags sold 'so far today/since the opening of your stall'
-        func averageSummary() {
+        func viewAverageSummary(with dailyDialogue: String, and totalDialogue: String) {
             alterAverageSummary(with: "weight", and: dailyDialogue, and: printKg(after: dailyAverageBagWeight))
             alterAverageSummary(with: "weight", and: totalDialogue, and: printKg(after: totalAverageBagWeight))
             alterAverageSummary(with: "cost", and: dailyDialogue, and: print$(before: dailyAverageBagCost))
             alterAverageSummary(with: "cost", and: totalDialogue, and: print$(before: totalAverageBagCost))
-            mainMenu()
+            mainMenu(with: dailyDialogue, and: totalDialogue)
         }
 
         /// Calculates total purchases
         /*
         : - Returns: Total purchases
         */
-        func boughtSummary() {
+        func viewBoughtSummary(with dailyDialogue: String, and totalDialogue: String) {
             alterWeightSummary(with: "bought \(printKg(after: dailyBoughtWeight)) of kumara", and: dailyDialogue)
             alterWeightSummary(with: "bought \(printKg(after: totalBoughtWeight)) of kumara", and: totalDialogue)
             alterWeightSummary(with: "spent \(print$(before: dailySpending)) on purchases", and: dailyDialogue)
             alterWeightSummary(with: "spent \(print$(before: totalSpending)) on purchases", and: totalDialogue)
-        mainMenu()
+        mainMenu(with: dailyDialogue, and: totalDialogue)
         }
 
         /// Calculates total sales
         /*
         : - Returns: Total sales
         */
-        func soldSummary() {
+        func viewSoldSummary(with dailyDialogue: String, and totalDialogue: String) {
             alterWeightSummary(with: "sold \(printKg(after: dailySoldWeight)) of kumara", and: dailyDialogue)
             alterWeightSummary(with: "sold \(printKg(after: totalSoldWeight)) of kumara", and: totalDialogue)
             alterWeightSummary(with: "earned \(print$(before: dailyEarnings)) on sales", and: dailyDialogue)
             alterWeightSummary(with: "earned \(print$(before: totalEarnings)) on sales", and: totalDialogue)
-        mainMenu()
+        mainMenu(with: dailyDialogue, and: totalDialogue)
         }
 
         /// Stall reaches closing hours with a summary of work statistics.
         func endDayWithSummary() {
-            boughtSummary()
-            soldSummary()
+            viewBoughtSummary(with: dailyDialogue, and: totalDialogue)
+            viewSoldSummary(with: dailyDialogue, and: totalDialogue)
 
             // Variable Resets for next day
             dailyBoughtWeight = dailyReset
@@ -418,7 +419,7 @@ struct SwiftPlayground {
             print ("Day \(dayCount)")
             print ("=====")
             print ("     ")
-            mainMenu()
+            mainMenu(with: dailyDialogue, and: totalDialogue)
         }
         
         // /// Tracks inputs for both buying/selling kumara
@@ -434,7 +435,7 @@ struct SwiftPlayground {
         //     var costingNumber = 00.0
         //     guard costingOption == readLine(), costingNumber == Double(costingOption) else {
         //         print("\(costingWarning)")
-        //         mainMenu()
+        //         mainMenu(with: dailyDialogue, and: totalDialogue)
         //         return costingNumber
         //     }
         //     return costingNumber
@@ -444,7 +445,7 @@ struct SwiftPlayground {
         /*
         : - Returns: Menu option chosen by the user.
         */
-        func mainMenu() -> Int {
+        func mainMenu(with dailyDialogue: String, and totalDialogue: String) -> String {
             print("==== Stall of Kumarativity ====")
             print("1. Buy kumara")
             print("2. Sell kumara")
@@ -457,41 +458,37 @@ struct SwiftPlayground {
             print("Choose an option (1-8):")
 
             /// A written number from 1-8 that decides which option of the Main Menu to perform
-            var menuOption = "00"
-            /// A written number from 1-8 that decides which option of the Main Menu to perform, converted to Int for easier List-Scrolling
-            // var menuNumber = 0
-            var menuNumber = Int(readLine()!)!
+            var menuOption = readLine()!
 
-            // guard menuOption == readLine(), menuNumber == Int(menuOption) else {
-            //     print("Invalid Input! Please enter a whole number from 1-8.")
-            //     print ("\(menuOption)")
-            //     print ("\(menuNumber)")
-            //     mainMenu()
-            //     return menuNumber
-            // }
-            if menuNumber == 1 {
+            if menuOption == "1" {
                 print("Please enter a weight (kg) of kumara you want to buy:")
                 // buyWeight(of: costingInput(with: "Invalid Input! Please enter a whole, positive number of kumara to buy that also wouldn't leave your stock overflowing!"))
-                buyWeight(of: Double(readLine()!)!)
-            } else if menuNumber == 2 {
+                var buyPlace = "0"
+                buyWeight()
+            }
+            
+            else if menuOption == "2" {
                 print("Please enter a weight (kg) of kumara you want to sell:")
                 // sellWeight(of: costingInput(with: "Invalid Input! Please enter a whole, positive number of kumara to sell that also wouldn't leave your stock in debt!"))
-                sellWeight(of: Double(readLine()!)!)
-
-            } else if menuNumber == 3 {
+                var sellPlace = "0"
+                sellWeight()
+            } else if menuOption == "3" {
                 stockMessage()
-            } else if menuNumber == 4 {
-                averageSummary()
-            } else if menuNumber == 5 {
-                boughtSummary()
-            } else if menuNumber == 6 {
-                soldSummary()
-            } else if menuNumber == 7 {
+            } else if menuOption == "4" {
+                viewAverageSummary(with: dailyDialogue, and: totalDialogue)
+            } else if menuOption == "5" {
+                viewBoughtSummary(with: dailyDialogue, and: totalDialogue)
+            } else if menuOption == "6" {
+                viewSoldSummary(with: dailyDialogue, and: totalDialogue)
+            } else if menuOption == "7" {
                 endDayWithSummary()
-            } else if menuNumber == 8 {
+            } else if menuOption == "8" {
                 print("Shutting Interface Down...")
+            } else {
+                print("Invalid Input! Please enter a whole number from 1-8.")
+                mainMenu(with: dailyDialogue, and: totalDialogue)
             }
-            return menuNumber
+            return menuOption
         }
     }
 }
