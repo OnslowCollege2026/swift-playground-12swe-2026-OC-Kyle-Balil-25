@@ -121,8 +121,10 @@ struct SwiftPlayground {
         var bagSaleCosts = 00.0
         /// The total costs of the bags and the kumara together for the customer
         var totalSaleCosts = 00.0
-        /// Placeholder variable for Sale Dialogue depending on how much kumara is being sold at a time
+        /// Placeholder variable inside Sale Dialogue depending on how much kumara is being sold at a time
         var bagCountDialogue = ""
+        /// Placeholder variable for summarising each sale
+        var saleDialogue = ""
 
         /* Data Transfer Variables between Menu Options #1-2 */
         var boughtWeightStock = 0.0
@@ -351,7 +353,7 @@ struct SwiftPlayground {
                 walletFunds += totalSaleCosts
 
                 // Sale Dialogue
-                var saleDialogue = "You sold \(roundNumber(of: convertCount(from: soldWeight))) Kumara at \(printKg(after: soldWeight)) costing \(print$(before: kumaraCosts)), using \(bagCountDialogue) costing \(print$(before: bagSaleCosts)), all adding up to a total cost of \(print$(before: totalSaleCosts)) for the customer."
+                saleDialogue = "You sold \(roundNumber(of: convertCount(from: soldWeight))) Kumara at \(printKg(after: soldWeight)) costing \(print$(before: kumaraCosts)), using \(bagCountDialogue) costing \(print$(before: bagSaleCosts)), all adding up to a total cost of \(print$(before: totalSaleCosts)) for the customer."
                 print (saleDialogue)
 
                 // Adds a new sale to history
@@ -446,7 +448,7 @@ struct SwiftPlayground {
         /// Tracks and stores the last 5 successful sales
         var lastFiveSales: [String] = []
         /// Lists the last 5 successful sales
-        func viewSaleHistory() { // Menu Option #7
+        func viewSaleHistory(using lastFiveSales: [String]) { // Menu Option #7
             /// Numerically Lists Sales
             var saleNumber = 0
             /// Indicates which direction the time of sales progresses in
@@ -527,7 +529,7 @@ struct SwiftPlayground {
             } else if menuOption == "6" {
                 viewSoldSummary(with: dailyDialogue, and: totalDialogue)
             } else if menuOption == "7" {
-                viewSaleHistory()
+                viewSaleHistory(using: lastFiveSales)
             } else if menuOption == "8" {
                 endDayWithSummary()
             } else if menuOption == "9" {
