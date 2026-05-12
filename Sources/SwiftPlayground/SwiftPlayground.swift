@@ -514,11 +514,9 @@ struct SwiftPlayground {
 
             if menuOption == "1" {
                 print("Please enter a weight (kg) of kumara you want to buy:")
-                var buyPlace = "0"
                 buyWeight()
             } else if menuOption == "2" {
                 print("Please enter a weight (kg) of kumara you want to sell:")
-                var sellPlace = "0"
                 sellWeight()
             } else if menuOption == "3" {
                 stockMessage()
