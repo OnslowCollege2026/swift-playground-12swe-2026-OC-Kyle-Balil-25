@@ -356,12 +356,12 @@ struct SwiftPlayground {
                 saleDialogue = "You sold \(roundNumber(of: convertCount(from: soldWeight))) Kumara at \(printKg(after: soldWeight)) costing \(print$(before: kumaraCosts)), using \(bagCountDialogue) costing \(print$(before: bagSaleCosts)), all adding up to a total cost of \(print$(before: totalSaleCosts)) for the customer."
                 print (saleDialogue)
 
-                // Adds a new sale to history
-                lastFiveSales.append(saleDialogue)
-                // Discards oldest sale to make room for a new one if history is full
-                if lastFiveSales.count > 5 {
-                    lastFiveSales.removeFirst()
-                }
+                // // Adds a new sale to history
+                // lastFiveSales.append(saleDialogue)
+                // // Discards oldest sale to make room for a new one if history is full
+                // if lastFiveSales.count > 5 {
+                //     lastFiveSales.removeFirst()
+                // }
                 
                 // Calculates Daily & Total Weight Sold
                 dailySoldWeight += soldWeight
@@ -445,32 +445,32 @@ struct SwiftPlayground {
         showMainMenu(with: dailyDialogue, and: totalDialogue)
         }
 
-        /// Tracks and stores the last 5 successful sales
-        var lastFiveSales: [String] = []
-        /// Lists the last 5 successful sales
-        func viewSaleHistory(using lastFiveSales: [String]) { // Menu Option #7
-            /// Numerically Lists Sales
-            var saleNumber = 0
-            /// Indicates which direction the time of sales progresses in
-            var saleTime = ""
-            for sale in lastFiveSales {
-                // Progresses through the list of sales
-                saleNumber += 1
-                // Ensures time indicator is only used at each end of the list
-                if saleNumber == 1 {
-                    saleTime = "(Oldest)"
-                } else if saleNumber == 5 {
-                    saleTime = "(Newest)"
-                } else {
-                    saleTime = ""
-                }
+        // /// Tracks and stores the last 5 successful sales
+        // var lastFiveSales: [String] = []
+        // /// Lists the last 5 successful sales
+        // func viewSaleHistory(using lastFiveSales: [String]) { // Menu Option #7
+        //     /// Numerically Lists Sales
+        //     var saleNumber = 0
+        //     /// Indicates which direction the time of sales progresses in
+        //     var saleTime = ""
+        //     for sale in lastFiveSales {
+        //         // Progresses through the list of sales
+        //         saleNumber += 1
+        //         // Ensures time indicator is only used at each end of the list
+        //         if saleNumber == 1 {
+        //             saleTime = "(Oldest)"
+        //         } else if saleNumber == 5 {
+        //             saleTime = "(Newest)"
+        //         } else {
+        //             saleTime = ""
+        //         }
 
-                // Prints Sale Summary
-                print ("Sale #\(saleNumber) \(saleTime)")
-                print ("\(sale)")
-                print ("")
-            }
-        }
+        //         // Prints Sale Summary
+        //         print ("Sale #\(saleNumber) \(saleTime)")
+        //         print ("\(sale)")
+        //         print ("")
+        //     }
+        // }
 
         /// Stall reaches closing hours with a summary of work statistics.
         func endDayWithSummary() { // Menu Option #8
@@ -527,7 +527,8 @@ struct SwiftPlayground {
             } else if menuOption == "6" {
                 viewSoldSummary(with: dailyDialogue, and: totalDialogue)
             } else if menuOption == "7" {
-                viewSaleHistory(using: lastFiveSales)
+                // viewSaleHistory(using: lastFiveSales)
+                print(:"Sorry, this option is currently broken. Try again in some time.")
             } else if menuOption == "8" {
                 endDayWithSummary()
             } else if menuOption == "9" {
