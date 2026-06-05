@@ -528,7 +528,7 @@ struct SwiftPlayground {
                 viewSoldSummary(with: dailyDialogue, and: totalDialogue)
             } else if menuOption == "7" {
                 // viewSaleHistory(using: lastFiveSales)
-                print(:"Sorry, this option is currently broken. Try again in some time.")
+                print("Sorry, this option is currently broken. Try again in some time.")
             } else if menuOption == "8" {
                 endDayWithSummary()
             } else if menuOption == "9" {
